@@ -84,13 +84,14 @@ const Model = () => {
             <Canvas
               className="w-full h-full"
               style={{
-                position: 'absolute',
+                position: 'fixed',
                 top: 0,
                 bottom: 0,
                 left: 0,
                 right: 0,
                 overflow: 'hidden',
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                zIndex: 1
               }}
               eventSource={document.getElementById('root')}
             >

@@ -11,6 +11,9 @@ import { models, sizes } from "../constants";
 import { animateWithGsapTimeline } from "../utils/animations";
 
 const Model = () => {
+  const modelContainerRef = useRef(null);
+  const [canvasEventSource, setCanvasEventSource] = useState(null);
+
   const [size, setSize] = useState('small');
   const [model, setModel] = useState({
     title: 'iPhone 15 Pro in Natural Titanium',
@@ -52,6 +55,10 @@ const Model = () => {
     gsap.to('#heading', { y: 0, opacity: 1 })
   }, []);
 
+  useEffect(() => {
+    setCanvasEventSource(modelContainerRef.current);
+  }, []);
+
   return (
     <section className="common-padding">
       <div className="screen-max-width">
@@ -60,7 +67,7 @@ const Model = () => {
         </h1>
 
         <div className="flex flex-col items-center mt-5">
-          <div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
+          <div ref={modelContainerRef} className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative touch-pan-y">
             <ModelView 
               index={1}
               groupRef={small}
@@ -81,20 +88,31 @@ const Model = () => {
               size={size}
             />
 
-            <Canvas
-              className="w-full h-full"
-              style={{
-                position: 'fixed',
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0,
-                overflow: 'hidden'
-              }}
-              eventSource={document.getElementById('root')}
-            >
-              <View.Port />
-            </Canvas>
+            {canvasEventSource && (
+              <Canvas
+                className="w-full h-full"
+                dpr={[1, 1.5]}
+                resize={{
+                  scroll: false,
+                  debounce: { scroll: 50, resize: 250 },
+                }}
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  overflow: 'hidden',
+                  pointerEvents: 'none',
+                  transform: 'translate3d(0,0,0)',
+                  willChange: 'transform',
+                  WebkitBackfaceVisibility: 'hidden',
+                }}
+                eventSource={canvasEventSource}
+              >
+                <View.Port />
+              </Canvas>
+            )}
           </div>
 
           <div className="mx-auto w-full">
